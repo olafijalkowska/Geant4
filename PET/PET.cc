@@ -34,9 +34,24 @@ int main(int argc, char** argv)
   runManager->Initialize();
 
   G4UImanager* UImanager = G4UImanager::GetUIpointer();
-  UImanager->ApplyCommand("/run/beamOn 20");
   
+  //wizualizacja 
+  G4VisManager* visManager = new G4VisExecutive;
+  visManager->Initialize();  
   
+
+  //ui - terminal do wpisywania komend
+  G4UIExecutive* ui = new G4UIExecutive(argc, argv);
+  UImanager->ApplyCommand("/vis/open OGL 600x600-0+0");
+  UImanager->ApplyCommand("/vis/drawVolume");
+  UImanager->ApplyCommand("/vis/scene/add/trajectories smooth");
+  UImanager->ApplyCommand("/vis/scene/endOfEventAction accumulate");
+  UImanager->ApplyCommand("/vis/modeling/trajectories/create/drawByCharge");
+  UImanager->ApplyCommand("/vis/modeling/trajectories/drawByCharge-0/default/setDrawStepPts true");
+  UImanager->ApplyCommand("/vis/modeling/trajectories/drawByCharge-0/default/setStepPtsSize 2");
+  UImanager->ApplyCommand("/vis/scene/add/axes 0 0 0 1.0 m");
+  
+  ui->SessionStart();  
   delete runManager;
   return 0;
 }
