@@ -10,6 +10,7 @@
 #include "G4VUserDetectorConstruction.hh"
 #include "G4LogicalVolume.hh"
 #include "G4VPhysicalVolume.hh"
+#include "G4NistManager.hh"  //wbudowane materiały
 
 class DetectorConstruction : public G4VUserDetectorConstruction
 {
@@ -22,9 +23,17 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 
   private:
     G4LogicalVolume* worldLogic; //świat
+    G4LogicalVolume* fantomLogVol;
+    G4LogicalVolume* theCylinderLogVol;
+    G4NistManager* man;
     //G4VPhysicalVolume* worldPhys;
     G4VPhysicalVolume* ConstructWorld(); //metoda w której świat zostanie zbudowany
     void ConstructHumanFantom();
+    void ConstructHumanSpine();
+    void ConstructNaIDetector();
+    void ConstructCylinder();
+    G4LogicalVolume* ConstructNaICrystal(G4double sizeX, G4double sizeY, G4double sizeZ);
+    
  
 };
 
