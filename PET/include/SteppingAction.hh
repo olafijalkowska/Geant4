@@ -15,8 +15,10 @@ class SteppingAction : public G4UserSteppingAction
     SteppingAction();
     virtual ~SteppingAction();
     virtual void UserSteppingAction(const G4Step*); 
+    static double totalEnergyDeposit;
   private:
      void PrintStep(const G4Step*);
+    
 };
 
 #endif

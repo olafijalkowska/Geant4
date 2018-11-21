@@ -25,6 +25,7 @@ class DetectorConstruction : public G4VUserDetectorConstruction
     G4LogicalVolume* worldLogic; //świat
     G4LogicalVolume* fantomLogVol;
     G4LogicalVolume* theCylinderLogVol;
+    G4LogicalVolume* naILog;
     G4NistManager* man;
     //G4VPhysicalVolume* worldPhys;
     G4VPhysicalVolume* ConstructWorld(); //metoda w której świat zostanie zbudowany

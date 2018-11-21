@@ -14,11 +14,16 @@
 #include "G4Tubs.hh" //walec
 #include "G4ThreeVector.hh" //trzyelementowy wektor wbudowany w geant
 #include "globals.hh"
+#include "G4MultiFunctionalDetector.hh"
+#include "G4SDManager.hh"
+#include "G4PSEnergyDeposit.hh"
+
 
 DetectorConstruction::DetectorConstruction()
 {
     worldLogic = 0L;
     fantomLogVol=0L;
+    naILog = 0L;
     man = G4NistManager::Instance();
 }
 
@@ -98,7 +103,7 @@ void DetectorConstruction::ConstructHumanSpine()
 	spineLogVol->SetVisAttributes(spineVisAtt); 
 	
 	
-	G4ThreeVector pos(0,0,length/2.);   
+	G4ThreeVector pos(5*cm,0,length/2.);   
     new G4PVPlacement(0, pos, spineLogVol, "spinePhys", fantomLogVol, 0, 0);
 
 }
@@ -169,7 +174,7 @@ G4LogicalVolume* DetectorConstruction::ConstructNaICrystal(G4double sizeX,
 {
 	G4Box* naISolid = new G4Box("naISolid", sizeX/2., sizeY/2., sizeZ/2.);
     G4Material* naIMat = man->FindOrBuildMaterial("G4_SODIUM_IODIDE");
-	G4LogicalVolume* naILog = new G4LogicalVolume(naISolid, naIMat, "naILog");
+	naILog = new G4LogicalVolume(naISolid, naIMat, "naILog");
 	
 	G4VisAttributes* naIVisAtt = new G4VisAttributes( G4Colour(0,1,0.5, 1.));
 	naIVisAtt->SetForceAuxEdgeVisible(true);// Can see outline when drawn with lines
@@ -202,6 +207,15 @@ void DetectorConstruction::ConstructCylinder()
 void DetectorConstruction::ConstructSDandField() 
 {
     //ustalanie mierzących elementów detektora
+    
+    G4MultiFunctionalDetector* detector = new G4MultiFunctionalDetector("naISensitiveDet");
+    G4SDManager* SDmanager = G4SDManager::GetSDMpointer();
+    SDmanager->AddNewDetector(detector);
+    naILog->SetSensitiveDetector(detector);
+    G4int depth = 1;
+    G4VPrimitiveScorer* energyDepScorer = new G4PSEnergyDeposit("eDep",depth);
+    detector->RegisterPrimitive(energyDepScorer);
+
 }
 
 

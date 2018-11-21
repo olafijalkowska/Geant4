@@ -39,6 +39,7 @@ void PrimaryGeneratorAction::SetUpDefault()
 void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 {	
     GeneratePositronIncident(anEvent);
+    //GenerateBackgroundIncident(anEvent);
     //particleGun->GeneratePrimaryVertex(anEvent);
 }	
 
@@ -56,6 +57,30 @@ void PrimaryGeneratorAction::GeneratePositronIncident(G4Event* anEvent)
     //5. wyślij tą cząstkę
     particleGun->GeneratePrimaryVertex(anEvent);
 }
+
+double PrimaryGeneratorAction::FindRandomFromHalfSize(G4double size)
+{
+    return G4UniformRand()*2.*size - size;
+}
+
+void PrimaryGeneratorAction::GenerateBackgroundIncident(G4Event* anEvent)
+{
+    //half lenght of my world volume, TODO make method to get this sizes
+    G4double worldX = 1.5*m;
+    G4double worldY = 1.5*m;
+    G4double worldZ = 1.5*m;
+    G4double randX = FindRandomFromHalfSize(worldX);
+    G4double randY = FindRandomFromHalfSize(worldY);
+    G4double randZ = FindRandomFromHalfSize(worldZ);
+    particleGun->SetParticlePosition(G4ThreeVector(randX,randY,randZ));
+    
+    G4ParticleDefinition* particle = particleTable->FindParticle("gamma");
+	particleGun->SetParticleDefinition(particle);
+	particleGun->SetParticleEnergy(1461*keV);
+	particleGun->SetParticleMomentumDirection(GenerateIsotropicDirection());
+	particleGun->GeneratePrimaryVertex(anEvent);
+}
+
 
 G4ThreeVector PrimaryGeneratorAction::GenerateIsotropicDirection()
 {

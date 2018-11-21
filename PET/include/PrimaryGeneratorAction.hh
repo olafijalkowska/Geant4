@@ -26,6 +26,8 @@ class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
     G4ParticleTable* particleTable;
     void GeneratePositronIncident(G4Event* anEvent);
     G4ThreeVector GenerateIsotropicDirection();
+    void GenerateBackgroundIncident(G4Event* anEvent);
+    double FindRandomFromHalfSize(G4double size);
 
 };
 
