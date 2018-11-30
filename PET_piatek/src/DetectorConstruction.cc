@@ -24,7 +24,6 @@ DetectorConstruction::DetectorConstruction()
     worldLogic = 0L;
     fantomLogVol=0L;
     naILog = 0L;
-    spineSD = 0L;
     man = G4NistManager::Instance();
 }
 
@@ -96,7 +95,7 @@ void DetectorConstruction::ConstructHumanSpine()
     G4Tubs* spineSolid = new G4Tubs("spineSolid", radiusMin, radiusMax, length/2., 0*deg, 360*deg);
     
     G4Material* boneMat = man->FindOrBuildMaterial("G4_BONE_COMPACT_ICRU");
-    spineLogVol = new G4LogicalVolume(spineSolid, boneMat, "spineLogVol");
+    G4LogicalVolume* spineLogVol = new G4LogicalVolume(spineSolid, boneMat, "spineLogVol");
     
     G4VisAttributes* spineVisAtt = new G4VisAttributes( G4Colour(1,0.95,0.95));
 	spineVisAtt->SetForceAuxEdgeVisible(true);// Can see outline when drawn with lines
@@ -216,15 +215,6 @@ void DetectorConstruction::ConstructSDandField()
     G4int depth = 1;
     G4VPrimitiveScorer* energyDepScorer = new G4PSEnergyDeposit("eDep",depth);
     detector->RegisterPrimitive(energyDepScorer);
-    
-    
-    if (!spineSD)
-    {
-        spineSD = new SpineSD("spineSD");//konstruktor
-    }
-
-    SDmanager->AddNewDetector(spineSD);//rejestracja w G4SDManager
-    spineLogVol->SetSensitiveDetector(spineSD); //przypisanie do log vol
 
 }
 

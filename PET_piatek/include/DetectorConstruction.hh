@@ -11,7 +11,7 @@
 #include "G4LogicalVolume.hh"
 #include "G4VPhysicalVolume.hh"
 #include "G4NistManager.hh"  //wbudowane materiały
-#include "SpineSD.hh"
+
 
 class DetectorConstruction : public G4VUserDetectorConstruction
 {
@@ -36,7 +36,6 @@ class DetectorConstruction : public G4VUserDetectorConstruction
     void ConstructNaIDetector();
     void ConstructCylinder();
     G4LogicalVolume* ConstructNaICrystal(G4double sizeX, G4double sizeY, G4double sizeZ);
-    SpineSD* spineSD;
     
  
 };
