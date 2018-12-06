@@ -15,12 +15,12 @@
 
 EventAction::EventAction()
 {
-    outputFile.open("spineEDep.txt");
+    outputFile = new OutputFile("EnergyInSpine.root");
 }
  
 EventAction::~EventAction()
 {
-     outputFile.close();
+     delete outputFile;
 }
 
 
@@ -45,14 +45,19 @@ void EventAction::EndOfEventAction(const G4Event* anEvent)
     SpineHitsCollection* spineHitColl = (SpineHitsCollection*)( hitsCollOfThisEvent->GetHC(spineCollId) );
     
     G4int size = spineHitColl->entries();
-    std::cout << "evnt " << eventID << " " << "size " << size << " ";
+    //std::cout << "evnt " << eventID << " " << "size " << size << " ";
+    G4double energyDepInEvent = 0;
     for(G4int i=0; i!=size; i++)
     {
          G4double energyDep = (*spineHitColl)[i]->GetEnDep();
-         std::cout << energyDep << " " ;
+         energyDepInEvent +=energyDep;
+         //std::cout << energyDep << " " ;
          G4double time = (*spineHitColl)[i]->GetTime();
     }
-    std::cout << std::endl;
+    outputFile->AddEnergy(energyDepInEvent);
+    
+    //std::cout << std::endl;
+    //energyDepInEvent - zmienna, która trzyma całkowiety depozyt energii.
 
 /*        
     G4THitsMap<G4double>* myEnDepMap = dynamic_cast <G4THitsMap<G4double>* > 
