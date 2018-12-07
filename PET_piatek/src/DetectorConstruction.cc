@@ -17,6 +17,7 @@
 #include "G4MultiFunctionalDetector.hh"
 #include "G4SDManager.hh"
 #include "G4PSEnergyDeposit.hh"
+#include "SpineSD.hh"
 
 
 DetectorConstruction::DetectorConstruction()
@@ -24,6 +25,7 @@ DetectorConstruction::DetectorConstruction()
     worldLogic = 0L;
     fantomLogVol=0L;
     naILog = 0L;
+    spineLogVol = 0L;
     man = G4NistManager::Instance();
 }
 
@@ -95,7 +97,7 @@ void DetectorConstruction::ConstructHumanSpine()
     G4Tubs* spineSolid = new G4Tubs("spineSolid", radiusMin, radiusMax, length/2., 0*deg, 360*deg);
     
     G4Material* boneMat = man->FindOrBuildMaterial("G4_BONE_COMPACT_ICRU");
-    G4LogicalVolume* spineLogVol = new G4LogicalVolume(spineSolid, boneMat, "spineLogVol");
+    spineLogVol = new G4LogicalVolume(spineSolid, boneMat, "spineLogVol");
     
     G4VisAttributes* spineVisAtt = new G4VisAttributes( G4Colour(1,0.95,0.95));
 	spineVisAtt->SetForceAuxEdgeVisible(true);// Can see outline when drawn with lines
@@ -216,6 +218,15 @@ void DetectorConstruction::ConstructSDandField()
     G4VPrimitiveScorer* energyDepScorer = new G4PSEnergyDeposit("eDep",depth);
     detector->RegisterPrimitive(energyDepScorer);
 
+
+
+
+    //tworze instancję klasy SpineSDG4SDManager* SDmanager = G4SDManager::GetSDMpointer();
+    SpineSD* spineSD = new SpineSD("spineSD");
+    //dodaję sensitive detector do G4SDManager
+    SDmanager->AddNewDetector(spineSD);
+    //przypisuję sensitive detector do jakiejść zmiennej log vol
+    spineLogVol->SetSensitiveDetector(spineSD);
 }
 
 

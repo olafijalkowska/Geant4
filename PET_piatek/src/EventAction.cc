@@ -31,12 +31,23 @@ void EventAction::BeginOfEventAction(const G4Event* anEvent)
 
 void EventAction::EndOfEventAction(const G4Event* anEvent)
 {
-    //zacznę od znaleziania unikalnego ID naszej kolekcji 
-    G4SDManager* SDmanager = G4SDManager::GetSDMpointer();
-    G4int collId = SDmanager->GetCollectionID("naISensitiveDet/eDep");
     G4HCofThisEvent *hitsCollOfThisEvent = anEvent->GetHCofThisEvent();
     if(!hitsCollOfThisEvent)
         return;
+        
+        
+        
+    //zacznę od znaleziania unikalnego ID naszej kolekcji 
+    G4SDManager* SDmanager = G4SDManager::GetSDMpointer();
+    int spineCollId=SDmanager->GetCollectionID("spineSD/spineHitsCollection");
+    
+    std::cout << spineCollId << std::endl;
+    
+    
+    //to wszystko dotyczy prostego licznika
+    /*
+    G4int collId = SDmanager->GetCollectionID("naISensitiveDet/eDep");
+
             
     G4THitsMap<G4double>* myEnDepMap = dynamic_cast <G4THitsMap<G4double>* > 
                                           (hitsCollOfThisEvent->GetHC (collId));
@@ -59,7 +70,7 @@ void EventAction::EndOfEventAction(const G4Event* anEvent)
   {
     G4cout << "Finished Running Event # " << eventID << G4endl;
   }
-  
+  */
 }
 
 
