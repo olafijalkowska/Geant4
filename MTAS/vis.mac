@@ -5,4 +5,4 @@
 /vis/modeling/trajectories/create/drawByCharge
 /vis/modeling/trajectories/drawByCharge-0/default/setDrawStepPts true
 /vis/modeling/trajectories/drawByCharge-0/default/setStepPtsSize 2
-#/vis/scene/add/axes 0 0 0 2.0 m
+/vis/scene/add/axes 0 0 0 0.5 m
