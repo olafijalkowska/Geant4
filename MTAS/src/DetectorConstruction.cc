@@ -94,7 +94,7 @@ void DetectorConstruction::ConstructAluHousing()
 {
     G4Material* aluMat = man->FindOrBuildMaterial("G4_Al");
     G4double zPlane[] = {-25.4*cm, 25.4*cm};
-    G4double side = 6.8*cm;
+    G4double side = (0.4+3*sqrt(3))*cm;
     G4double rInner[] = {0,0,0,0,0,0};
     G4double rOuter[] = {side,side,side,side,side,side};
     G4Polyhedra* aluSolid = new G4Polyhedra("aluSolid",0*deg, 360*deg, 6, 2, zPlane,rInner,rOuter);
@@ -104,16 +104,23 @@ void DetectorConstruction::ConstructAluHousing()
 	aluVisAtt->SetForceAuxEdgeVisible(true);// Can see outline when drawn with lines
 	aluLogic->SetVisAttributes(aluVisAtt);
 	
-	G4ThreeVector pos(12*cm, 0, 0);
-    new G4PVPlacement(0, pos, aluLogic, "aluPhys", worldLogic, 0, 0, 0);
-    
+	
+	G4double R = side*2.;
+	for(int i = 0; i!=6; ++i)
+    {
+        double angle = 60*deg*i;
+        double x = R*sin(angle);
+        double y = R*cos(angle);
+        G4ThreeVector pos(x, y, 0);
+        new G4PVPlacement(0, pos, aluLogic, "aluPhys", worldLogic, 0, i, 0);    
+    }    
 }
 
 void DetectorConstruction::ConstructTeflonHousing()
 {
     G4Material* teflonMat = man->FindOrBuildMaterial("G4_TEFLON");
     G4double zPlane[] = {-25.1*cm, 25.1*cm};
-    G4double side = 6.2*cm;
+    G4double side = (0.1+3*sqrt(3))*cm;
     G4double rInner[] = {0,0,0,0,0,0};
     G4double rOuter[] = {side,side,side,side,side,side};
     G4Polyhedra* teflonSolid = new G4Polyhedra("teflonSolid",0*deg, 360*deg, 6, 2, zPlane,rInner,rOuter);
@@ -132,7 +139,7 @@ void DetectorConstruction::ConstructNaIDetector()
 {
     G4Material* naIMat = man->FindOrBuildMaterial("G4_SODIUM_IODIDE");
     G4double zPlane[] = {-25*cm, 25*cm};
-    G4double side = 6*cm;
+    G4double side = 3*sqrt(3)*cm;
     G4double rInner[] = {0,0,0,0,0,0};
     G4double rOuter[] = {side,side,side,side,side,side};
     G4Polyhedra* naISolid = new G4Polyhedra("naISolid",0*deg, 360*deg, 6, 2, zPlane,rInner,rOuter);
@@ -158,7 +165,13 @@ void DetectorConstruction::ConstructWholeDetector()
 	
 void DetectorConstruction::ConstructSDandField() 
 {
-
+    G4MultiFunctionalDetector* detector = new G4MultiFunctionalDetector("siliSensitiveDet");
+    G4SDManager* SDmanager = G4SDManager::GetSDMpointer();
+    SDmanager->AddNewDetector(detector);
+    siliDetLogic->SetSensitiveDetector(detector);
+    G4VPrimitiveScorer* energyDepScorer = new G4PSEnergyDeposit("eDep",0);
+    detector->RegisterPrimitive(energyDepScorer);
+    
 }
 
 

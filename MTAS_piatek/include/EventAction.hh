@@ -9,8 +9,6 @@
 
 #include "G4UserEventAction.hh"
 #include "G4Event.hh"
-#include "TFile.h"
-#include "TTree.h"
 #include <fstream>
 
 class EventAction : public G4UserEventAction
@@ -22,12 +20,6 @@ class EventAction : public G4UserEventAction
     virtual void EndOfEventAction(const G4Event*);
     
   private:
-    TFile* file;
-    TTree* tree;
-    TTree* tree2;
-    double tempEnergy;
-    double tempEnStep;
-    double tempTimeStep;
 
 };
 

@@ -11,15 +11,28 @@
 #include "G4SystemOfUnits.hh"
 #include "G4SDManager.hh"
 #include "G4THitsMap.hh"
+#include "SpineHit.hh"
 
 EventAction::EventAction()
 {
-    outputFile.open("spineEDep.txt");
+    
+    file = new TFile("plik_wynikowy.root", "recreate");
+    tree = new TTree("drzewo", "drzewo");
+    tree->Branch("galaz_energia",&tempEnergy); 
+    
+    tree2 = new TTree("energy_time", "energy_time");
+
+    double tempEnStep;
+    double tempTimeStep;
+    
+       
 }
  
 EventAction::~EventAction()
 {
-     outputFile.close();
+    file->Write();
+    file->Close();
+    delete file;
 }
 
 
@@ -41,8 +54,25 @@ void EventAction::EndOfEventAction(const G4Event* anEvent)
     G4SDManager* SDmanager = G4SDManager::GetSDMpointer();
     int spineCollId=SDmanager->GetCollectionID("spineSD/spineHitsCollection");
     
-    std::cout << spineCollId << std::endl;
+    //std::cout << spineCollId << std::endl;
+    SpineHitsCollection* spineHC = (SpineHitsCollection*) (hitsCollOfThisEvent->GetHC(spineCollId));
     
+    int size = spineHC->entries();
+    G4int eventID = anEvent->GetEventID();
+    double sumOfEnergy = 0;
+    //std::cout << "eventId: " << eventID << " " ;
+    for(int i = 0; i != size; ++i)
+    {
+        SpineHit* hit = (*spineHC)[i];
+        double energy = hit->GetEnergy();
+        double time = hit->GetTime();
+        sumOfEnergy += energy/keV;
+        //std::cout << energy/keV << " " ;
+    
+    }
+    //std::cout << sumOfEnergy << std::endl;
+    tempEnergy = sumOfEnergy;
+    tree->Fill();
     
     //to wszystko dotyczy prostego licznika
     /*

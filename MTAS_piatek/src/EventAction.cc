@@ -14,6 +14,9 @@
 
 EventAction::EventAction()
 {
+
+    
+       
 }
  
 EventAction::~EventAction()
@@ -30,29 +33,38 @@ void EventAction::BeginOfEventAction(const G4Event* anEvent)
 
 void EventAction::EndOfEventAction(const G4Event* anEvent)
 {
-    //trzyma wszystkie kolekcje hitów
     G4HCofThisEvent *hitsCollOfThisEvent = anEvent->GetHCofThisEvent();
     if(!hitsCollOfThisEvent)
         return;
-    
-    int eventId = anEvent-> GetEventID();   
-    //
+        
+    //chcemy poznać uniklane ID kolekcji
     G4SDManager* SDmanager = G4SDManager::GetSDMpointer();
     G4int siliCollId = SDmanager->GetCollectionID("siliSensitiveDet/eDep");
     
-    //wyciągamy mapę depozytów energii
-    G4THitsMap<G4double>* siliEnDep = dynamic_cast <G4THitsMap<G4double>* > 
-                                          (hitsCollOfThisEvent->GetHC(siliCollId));
-                                          
+    //chcemy dostać się do kolekcji
+   G4THitsMap<G4double>* siliEnDepMap = dynamic_cast <G4THitsMap<G4double>* > 
+                                          (hitsCollOfThisEvent->GetHC (siliCollId));
+   
+   G4double enDepIn0Copy(0), enDepIn1Copy(0);
+   //depozyt energii w pierwszej kopii (0):
+   if((*siliEnDepMap)[0] != 0L)
+       enDepIn0Copy =*((*siliEnDepMap)[0]);
+
+   //
+   if((*siliEnDepMap)[1] != 0L)
+       enDepIn1Copy =*((*siliEnDepMap)[1]);
+     
+   std::cout << enDepIn0Copy/keV << " " << enDepIn1Copy/keV << std::endl;  
+     
+     /*                                            
     for(int i =0; i!= 2; ++i)
     {
-        if((*siliEnDep)[i] != 0L)
+        if((*siliEnDepMap)[i] != 0L)
         {
-            G4double depozytEnergii =*((*siliEnDep)[i]);
-            std::cout << eventId << " " << "numer kopii: " << i << " enDep: " << depozytEnergii/keV << std::endl;
+            G4double depozytEnergii =*((*siliEnDepMap)[i]);
+
         }
-    }    
-    
+    }*/
 }
 
 

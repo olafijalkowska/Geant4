@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.6 FATAL_ERROR)
-project(PET)
+project(MTAS)
 
 # GEANT4 core
 find_package(Geant4 REQUIRED ui_all vis_all)
@@ -17,6 +17,6 @@ set(CMAKE_BUILD_TYPE release)
 file(GLOB sources ${PROJECT_SOURCE_DIR}/src/*.cc)
 file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.hh)
 
-add_executable(PET PET.cc ${sources} ${headers})
-target_link_libraries(PET ${Geant4_LIBRARIES})
-target_link_libraries(PET ${ROOT_LIBRARIES})
+add_executable(MTAS MTAS.cc ${sources} ${headers})
+target_link_libraries(MTAS ${Geant4_LIBRARIES})
+target_link_libraries(MTAS ${ROOT_LIBRARIES})
