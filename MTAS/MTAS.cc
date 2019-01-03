@@ -38,21 +38,23 @@ int main(int argc, char** argv)
   //wizualizacja 
   G4VisManager* visManager = new G4VisExecutive;
   visManager->Initialize();  
-  
-
-  //ui - terminal do wpisywania komend
-  G4UIExecutive* ui = new G4UIExecutive(argc, argv);
+ 
   
   
   if(argc == 1)
+  {
+        //ui - terminal do wpisywania komend
+      G4UIExecutive* ui = new G4UIExecutive(argc, argv);
       UImanager->ApplyCommand("/control/execute ../vis.mac");
+      ui->SessionStart(); 
+  }
   else
   {
      G4String filename = argv[1];
      UImanager->ApplyCommand("/control/execute " + filename);
    }
   
-  ui->SessionStart();  
+   
   delete runManager;
   return 0;
 }
