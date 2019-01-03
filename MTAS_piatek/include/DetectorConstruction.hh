@@ -25,9 +25,15 @@ class DetectorConstruction : public G4VUserDetectorConstruction
   private:
     G4LogicalVolume* worldLogic; //świat
     G4LogicalVolume* siliLogic;
+    G4LogicalVolume* aluLogic;
+    G4LogicalVolume* teflonLogic;
+    G4LogicalVolume* naILogic;
     G4NistManager* man;
     G4VPhysicalVolume* ConstructWorld(); //metoda w której świat zostanie zbudowany
     void ConstructSiliDetectors();
+    void ConstructAluLayer();
+    void ConstructTeflonLayer();
+    void ConstructNaIDetectors();
     
  
 };

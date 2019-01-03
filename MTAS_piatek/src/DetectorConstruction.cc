@@ -12,6 +12,7 @@
 #include "G4Material.hh" //materiały
 #include "G4Box.hh" //prostopadłościan
 #include "G4Tubs.hh" //walec
+#include "G4Polyhedra.hh"
 #include "G4ThreeVector.hh" //trzyelementowy wektor wbudowany w geant
 #include "globals.hh"
 #include "G4MultiFunctionalDetector.hh"
@@ -23,6 +24,9 @@ DetectorConstruction::DetectorConstruction()
 {
     worldLogic = 0L;
     siliLogic = 0L;
+    aluLogic = 0L;
+    teflonLogic = 0L;
+    naILogic = 0L;
     man = G4NistManager::Instance();
 }
 
@@ -35,6 +39,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 {
     G4VPhysicalVolume* worldPhys = ConstructWorld();
     ConstructSiliDetectors();
+    ConstructAluLayer();
     return worldPhys;
 }
 
@@ -87,6 +92,78 @@ void DetectorConstruction::ConstructSiliDetectors()
 	
 	
 }
+
+
+void DetectorConstruction::ConstructAluLayer()
+{
+   //kształt
+    G4double zPlane[] = {-25.6 *cm, 25.6*cm};
+    G4double rInner[] = {0,0,0,0,0,0};
+    G4double radius = 6.6*cm;
+    G4double rOuter[] = {radius, radius, radius, radius, radius, radius};
+    G4Polyhedra* aluSolid = new G4Polyhedra ("aluSolid", 0*deg,360*deg, 6, 2, zPlane, rInner, rOuter);
+   
+    G4Material* aluminum = man->FindOrBuildMaterial("G4_Al");
+    aluLogic = new G4LogicalVolume(aluSolid, aluminum, "aluLogic");
+   
+    G4VisAttributes* aluVisAtt = new G4VisAttributes( G4Colour::Blue());
+    aluVisAtt->SetForceAuxEdgeVisible(true);// Can see outline when drawn with lines
+    aluLogic->SetVisAttributes(aluVisAtt);
+    
+    //powstawanie kolejnych warstw
+    ConstructTeflonLayer();
+    ConstructNaIDetectors();
+    
+    double D = 13.2*cm;
+    for(int i = 0; i!=6; ++i)
+    {
+        double alpha = 60*deg*i;
+        G4ThreeVector place(D*sin(alpha),D*cos(alpha),0);
+	    new G4PVPlacement(0, place, aluLogic, "aluPhys", worldLogic, 0, i);
+	}
+    
+}
+
+void DetectorConstruction::ConstructTeflonLayer()
+{
+   //kształt
+    G4double zPlane[] = {-25.1 *cm, 25.1*cm};
+    G4double rInner[] = {0,0,0,0,0,0};
+    G4double radius = 6.1*cm;
+    G4double rOuter[] = {radius, radius, radius, radius, radius, radius};
+    G4Polyhedra* solid = new G4Polyhedra ("teflonSolid", 0*deg,360*deg, 6, 2, zPlane, rInner, rOuter);
+   
+    G4Material* teflon = man->FindOrBuildMaterial("G4_TEFLON");
+    teflonLogic = new G4LogicalVolume(solid, teflon, "teflonLogic");
+   
+    G4VisAttributes* visAtt = new G4VisAttributes( G4Colour::Grey());
+    visAtt->SetForceAuxEdgeVisible(true);// Can see outline when drawn with lines
+    teflonLogic->SetVisAttributes(visAtt);
+    G4ThreeVector place(0,0,0);
+	new G4PVPlacement(0, place, teflonLogic, "teflonPhys", aluLogic, 0, 0);
+}
+
+void DetectorConstruction::ConstructNaIDetectors()
+{
+   //kształt
+    G4double zPlane[] = {-25. *cm, 25.*cm};
+    G4double rInner[] = {0,0,0,0,0,0};
+    G4double radius = 6.*cm;
+    G4double rOuter[] = {radius, radius, radius, radius, radius, radius};
+    G4Polyhedra* solid = new G4Polyhedra ("aluSolid", 0*deg,360*deg, 6, 2, zPlane, rInner, rOuter);
+   
+    G4Material* naI = man->FindOrBuildMaterial("G4_SODIUM_IODIDE");
+    naILogic = new G4LogicalVolume(solid, naI, "naILogic");
+   
+    G4VisAttributes* visAtt = new G4VisAttributes( G4Colour::Green());
+    visAtt->SetForceAuxEdgeVisible(true);// Can see outline when drawn with lines
+    visAtt->SetForceSolid(true);
+    naILogic->SetVisAttributes(visAtt);
+    G4ThreeVector place(0,0,0);
+	new G4PVPlacement(0, place, naILogic, "naIPhys", teflonLogic, 0, 0);
+}
+
+
 
 
 /*
