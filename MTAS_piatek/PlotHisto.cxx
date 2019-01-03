@@ -1,7 +1,7 @@
 void PlotHisto()
 {
     //nazwa pliku:
-    TFile* file = new TFile("file.root");
+    TFile* file = new TFile("build/file.root");
     //nazwa frzewa 
     TTree* tree=(TTree*)file->Get("treeName");
  
@@ -17,7 +17,7 @@ void PlotHisto()
     tree->Draw("leafName>>histo0");
     
     int lowBin = 100;//threshold
-    int highBin = (int) NBins;//ostani bin
+    int highBin = (int) xNBins;//ostani bin
     double calka = histo->Integral(lowBin, highBin);
     std::cout << "l. zliczen powyzej progu: " << calka << std::endl;
     //rysowanie histogramu
